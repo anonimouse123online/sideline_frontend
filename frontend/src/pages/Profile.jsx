@@ -216,40 +216,46 @@ const Profile = () => {
       </main>
 
       {/* Jobs Posted Modal */}
-      {isJobsModalOpen && (
-        <div className="modal-overlay" onClick={() => setIsJobsModalOpen(false)}>
-          <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>My Posted Jobs</h2>
-              <button className="modal-close-btn" onClick={() => setIsJobsModalOpen(false)}>×</button>
-            </div>
-            <div className="modal-content">
-              {jobsLoading ? (
-                <p className="modal-loading">Loading your jobs...</p>
-              ) : userJobs.length === 0 ? (
-                <p className="modal-empty">You haven't posted any jobs yet.</p>
-              ) : (
-                <div className="jobs-posted-list">
-                  {userJobs.map(job => (
-                    <div key={job.id} className="job-item">
-                      <h3>{job.title}</h3>
-                      <p>{job.description}</p>
-                      <div className="job-item-actions">
-                        <button
-                          className="view-applicants-btn"
-                          onClick={() => setViewingApplicants(job)}
-                        >
-                          View Applicants
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+{isJobsModalOpen && (
+  <div className="modal-overlay" onClick={() => setIsJobsModalOpen(false)}>
+    <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-header">
+        <button
+          className="back-btn"
+          onClick={() => setIsJobsModalOpen(false)}
+        >
+          ← Back
+        </button>
+        <h2>My Posted Jobs</h2>
+        <button className="modal-close-btn" onClick={() => setIsJobsModalOpen(false)}>×</button>
+      </div>
+      <div className="modal-content">
+        {jobsLoading ? (
+          <p className="modal-loading">Loading your jobs...</p>
+        ) : userJobs.length === 0 ? (
+          <p className="modal-empty">You haven't posted any jobs yet.</p>
+        ) : (
+          <div className="jobs-posted-list">
+            {userJobs.map(job => (
+              <div key={job.id} className="job-item">
+                <h3>{job.title}</h3>
+                <p>{job.description}</p>
+                <div className="job-item-actions">
+                  <button
+                    className="view-applicants-btn"
+                    onClick={() => setViewingApplicants(job)}
+                  >
+                    View Applicants
+                  </button>
                 </div>
-              )}
-            </div>
+              </div>
+            ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
+    </div>
+  </div>
+)}
 
       {/* Applied Jobs Modal */}
 <AppliedJobs
