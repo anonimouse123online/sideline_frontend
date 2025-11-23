@@ -1,6 +1,6 @@
 // src/App.jsx
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import Explore from './pages/Explore';
 import FindWork from './pages/FindWork';
 import About from './pages/About';
@@ -21,6 +21,7 @@ const App = () => {
   }
 
   return (
+    <Router>
       <Routes>
         <Route path="/" element={<Explore />} />
         <Route path="/explore" element={<Explore />} />
@@ -33,6 +34,7 @@ const App = () => {
         <Route path="/job/:id" element={<JobDetails />} />
         <Route path="/you-applied" element={<YouApplied />} />
       </Routes>
+    </Router>
   );
 };
 
