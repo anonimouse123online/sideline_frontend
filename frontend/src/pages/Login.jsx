@@ -1,6 +1,7 @@
 // src/pages/LogInPage.jsx
 import React, { useState } from 'react';
 import { Eye, EyeOff, Phone } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; // ✅ Added useNavigate
 import Navbar from '../components/Navbar';
 import './Login.css';
 
@@ -11,6 +12,7 @@ const LogInPage = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate(); // ✅ Initialize useNavigate
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -18,60 +20,60 @@ const LogInPage = () => {
     if (error) setError('');
   };
 
-  // In your LogInPage.jsx - update the handleSubmit function:
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setError('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
 
-  try {
-    const response = await fetch(`${API_URL}/api/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: formData.email,
-        password: formData.password
-      }),
-    });
+    try {
+      const response = await fetch(`${API_URL}/api/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        }),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    console.log('🔍 LOGIN RESPONSE:', { status: response.status, ok: response.ok, data });
+      console.log('🔍 LOGIN RESPONSE:', { status: response.status, ok: response.ok, data });
 
-    if (!response.ok) throw new Error(data.error || "Login failed");
+      if (!response.ok) throw new Error(data.error || "Login failed");
 
-    // Store user object
-    localStorage.setItem("user", JSON.stringify(data.user));
+      // Store user object
+      localStorage.setItem("user", JSON.stringify(data.user));
 
-    // Store user ID separately to match users.id in DB
-    localStorage.setItem("id", data.user.id);
+      // Store user ID separately to match users.id in DB
+      localStorage.setItem("id", data.user.id);
 
-    // Store token
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-    } else if (data.accessToken) {
-      localStorage.setItem("token", data.accessToken);
-    } else {
-      console.warn("⚠️ No token found in login response");
+      // Store token
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      } else if (data.accessToken) {
+        localStorage.setItem("token", data.accessToken);
+      } else {
+        console.warn("⚠️ No token found in login response");
+      }
+
+      console.log('🔍 localStorage after login:', {
+        user: localStorage.getItem("user"),
+        id: localStorage.getItem("id"),
+        token: localStorage.getItem("token")
+      });
+
+      alert("✅ Login successful!");
+      
+      // ✅ FIXED: Use navigate instead of window.location.href
+      navigate("/find-work");
+
+    } catch (err) {
+      console.error("Login error:", err);
+      setError(err.message || "Failed to login. Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    console.log('🔍 localStorage after login:', {
-      user: localStorage.getItem("user"),
-      id: localStorage.getItem("id"),
-      token: localStorage.getItem("token")
-    });
-
-    alert("✅ Login successful!");
-    window.location.href = "/find-work";
-
-  } catch (err) {
-    console.error("Login error:", err);
-    setError(err.message || "Failed to login. Please try again.");
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <div className="login-page">
