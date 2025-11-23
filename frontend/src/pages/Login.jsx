@@ -1,7 +1,7 @@
 // src/pages/LogInPage.jsx
 import React, { useState } from 'react';
 import { Eye, EyeOff, Phone } from 'lucide-react';
-import { useNavigate } from 'react-router-dom'; // ✅ Added useNavigate
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import './Login.css';
 
@@ -12,7 +12,7 @@ const LogInPage = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const navigate = useNavigate(); // ✅ Initialize useNavigate
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -36,35 +36,18 @@ const LogInPage = () => {
       });
 
       const data = await response.json();
-
       console.log('🔍 LOGIN RESPONSE:', { status: response.status, ok: response.ok, data });
 
       if (!response.ok) throw new Error(data.error || "Login failed");
 
-      // Store user object
+      // Store user info in localStorage
       localStorage.setItem("user", JSON.stringify(data.user));
-
-      // Store user ID separately to match users.id in DB
       localStorage.setItem("id", data.user.id);
-
-      // Store token
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-      } else if (data.accessToken) {
-        localStorage.setItem("token", data.accessToken);
-      } else {
-        console.warn("⚠️ No token found in login response");
-      }
-
-      console.log('🔍 localStorage after login:', {
-        user: localStorage.getItem("user"),
-        id: localStorage.getItem("id"),
-        token: localStorage.getItem("token")
-      });
+      localStorage.setItem("token", data.token || data.accessToken || "");
 
       alert("✅ Login successful!");
-      
-      // ✅ FIXED: Use navigate instead of window.location.href
+
+      // Navigate client-side without full page reload
       navigate("/find-work");
 
     } catch (err) {
@@ -80,7 +63,7 @@ const LogInPage = () => {
       <Navbar />
 
       <div className="login-main">
-        {/* Left Side — Hero Content */}
+        {/* Hero Section */}
         <div className="login-hero">
           <div className="hero-content">
             <h1 className="hero-title">Find Your Perfect Side Hustle</h1>
@@ -104,7 +87,7 @@ const LogInPage = () => {
           </div>
         </div>
 
-        {/* Right Side — Login Form */}
+        {/* Login Form */}
         <div className="login-container">
           <div className="login-card">
             <div className="login-header">
@@ -115,6 +98,7 @@ const LogInPage = () => {
             {error && <div className="alert alert-error">{error}</div>}
 
             <form onSubmit={handleSubmit} className="login-form">
+              {/* Email */}
               <div className="form-group">
                 <label htmlFor="email" className="form-label">Email</label>
                 <input
@@ -130,6 +114,7 @@ const LogInPage = () => {
                 />
               </div>
 
+              {/* Password */}
               <div className="form-group">
                 <label htmlFor="password" className="form-label">Password</label>
                 <div className="password-wrapper">
@@ -155,10 +140,12 @@ const LogInPage = () => {
                 </div>
               </div>
 
+              {/* Forgot Password */}
               <div className="forgot-password-wrapper">
                 <a href="#" className="forgot-password-link">Forgot your password?</a>
               </div>
 
+              {/* Submit */}
               <button 
                 type="submit" 
                 className="login-submit-btn"
@@ -167,12 +154,14 @@ const LogInPage = () => {
                 {loading ? 'Signing in...' : 'Sign in'}
               </button>
 
+              {/* Divider */}
               <div className="divider">
                 <div className="divider-line"></div>
                 <span className="divider-text">or continue with</span>
                 <div className="divider-line"></div>
               </div>
 
+              {/* Social Buttons */}
               <div className="social-login-buttons">
                 <button type="button" className="social-btn" disabled>
                   <svg className="social-icon google-icon" viewBox="0 0 24 24">
@@ -196,6 +185,7 @@ const LogInPage = () => {
               </div>
             </form>
 
+            {/* Signup Link */}
             <div className="signup-link-wrapper">
               <p className="signup-text">
                 Don't have an account? <a href="/signup" className="signup-link">Sign up for free</a>
