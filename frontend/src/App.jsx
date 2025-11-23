@@ -1,6 +1,7 @@
+// src/App.jsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar'; // Make sure Navbar is imported
+import Navbar from './components/Navbar';
 import Explore from './pages/Explore';
 import FindWork from './pages/FindWork';
 import About from './pages/About';
@@ -22,19 +23,23 @@ const App = () => {
 
   return (
     <>
-      <Navbar /> {/* Navbar is now inside Router */}
-      <Routes>
-        <Route path="/" element={<Explore />} />
-        <Route path="/explore" element={<Explore />} />
-        <Route path="/find-work" element={<FindWork />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/post-job" element={<PostJob />} />
-        <Route path="/job/:id" element={<JobDetails />} />
-        <Route path="/you-applied" element={<YouApplied />} />
-      </Routes>
+      <Navbar /> {/* Navbar stays on top */}
+      
+      {/* Page container centers content */}
+      <div className="page-container">
+        <Routes>
+          <Route path="/" element={<Explore />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/find-work" element={<FindWork />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/post-job" element={<PostJob />} />
+          <Route path="/job/:id" element={<JobDetails />} />
+          <Route path="/you-applied" element={<YouApplied />} />
+        </Routes>
+      </div>
     </>
   );
 };
