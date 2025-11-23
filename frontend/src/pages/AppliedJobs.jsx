@@ -65,10 +65,13 @@ const AppliedJobs = ({ userId, isVisible, onClose }) => {
           ) : (
             <div className="applied-jobs-list">
               {appliedJobs.map((job) => (
-                <div key={job.id} className="applied-job-item">
-                  <h3>{job.title}</h3>
-                  <p>{job.description}</p>
+                <div key={job.application_id} className="applied-job-item">
+                  <h3>{job.job_title || 'Untitled Job'}</h3>
+                  <p>{job.job_description || 'No description provided'}</p>
                   <p>Status: <strong>{job.status || 'Pending'}</strong></p>
+                  <p>Position: {job.position || 'Not specified'}</p>
+                  <p>Applied on: {job.applied_at ? new Date(job.applied_at).toLocaleDateString() : 'Unknown'}</p>
+                  {job.contact_email && <p>Contact: {job.contact_email}</p>}
                 </div>
               ))}
             </div>
