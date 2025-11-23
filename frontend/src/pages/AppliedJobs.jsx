@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { X, ArrowLeft } from 'lucide-react';
 import './AppliedJobs.css';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:10000';
 
 const AppliedJobs = ({ userId, isVisible, onClose }) => {
   const [appliedJobs, setAppliedJobs] = useState([]);
@@ -21,17 +21,8 @@ const AppliedJobs = ({ userId, isVisible, onClose }) => {
     setError(null);
     try {
       const res = await fetch(`${API_URL}/api/applicants/user/${userId}/applications`);
-      const text = await res.text(); // raw response
-
-      let data = [];
-      try {
-        data = JSON.parse(text);
-      } catch {
-        throw new Error('Server did not return valid JSON. Response: ' + text);
-      }
-
-      if (!res.ok) throw new Error(data.error || 'Failed to fetch applied jobs');
-
+      if (!res.ok) throw new Error(`Failed to fetch applied jobs: ${res.status}`);
+      const data = await res.json();
       setAppliedJobs(data);
     } catch (err) {
       console.error('Error fetching applied jobs:', err);
@@ -55,6 +46,7 @@ const AppliedJobs = ({ userId, isVisible, onClose }) => {
             <X size={20} />
           </button>
         </div>
+
         <div className="applied-modal-content">
           {loading ? (
             <p className="loading-text">Loading applied jobs...</p>
@@ -68,10 +60,27 @@ const AppliedJobs = ({ userId, isVisible, onClose }) => {
                 <div key={job.application_id} className="applied-job-item">
                   <h3>{job.job_title || 'Untitled Job'}</h3>
                   <p>{job.job_description || 'No description provided'}</p>
-                  <p>Status: <strong>{job.status || 'Pending'}</strong></p>
-                  <p>Position: {job.position || 'Not specified'}</p>
-                  <p>Applied on: {job.applied_at ? new Date(job.applied_at).toLocaleDateString() : 'Unknown'}</p>
-                  {job.contact_email && <p>Contact: {job.contact_email}</p>}
+                  <p>
+                    <strong>Status:</strong> {job.status || 'Pending'}
+                  </p>
+                  <p>
+                    <strong>Position:</strong> {job.position || 'Not specified'}
+                  </p>
+                  <p>
+                    <strong>Applied on:</strong>{' '}
+                    {job.applied_at
+                      ? new Date(job.applied_at).toLocaleDateString(undefined, {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })
+                      : 'Unknown'}
+                  </p>
+                  {job.contact_email && (
+                    <p>
+                      <strong>Contact:</strong> {job.contact_email}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
