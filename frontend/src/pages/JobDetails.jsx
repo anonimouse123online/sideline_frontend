@@ -16,6 +16,8 @@ const JobDetails = () => {
   const [error, setError] = useState(null);
   const [applying, setApplying] = useState(false);
 
+  const isLoggedIn = !!localStorage.getItem("token") && !!localStorage.getItem("id");
+
   useEffect(() => {
     const fetchJob = async () => {
       setLoading(true);
@@ -41,55 +43,56 @@ const JobDetails = () => {
   }, [id]);
 
   const handleApply = async () => {
-  if (!job) return;
-
-  const userId = Number(localStorage.getItem("id")); // must match users.id in DB
-  if (!userId) {
-    alert("❌ You must be logged in to apply.");
-    return;
-  }
-
-  setApplying(true);
-  try {
-    const payload = {
-      job_id: job.id,
-      user_id: userId,
-      experience: null,
-      location: null,
-      cover_letter: null,
-      resume_url: null,
-      skills: [],
-      position: "Applicant", // <--- Added position
-    };
-
-    console.log("APPLY PAYLOAD:", payload);
-
-    const res = await fetch(`${API_URL}/api/applicants`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.error || "Failed to apply for this job.");
+    if (!isLoggedIn) {
+      alert("❌ You must be logged in to apply for this job.");
+      navigate("/login");
       return;
     }
 
-    // Redirect to YouApplied page with job info
-    navigate("/you-applied", { state: { job } });
-  } catch (err) {
-    console.error("Application error:", err);
-    alert("Failed to submit application.");
-  } finally {
-    setApplying(false);
-  }
-};
+    if (!job) return;
 
+    setApplying(true);
+
+    try {
+      const payload = {
+        job_id: job.id,
+        user_id: Number(localStorage.getItem("id")),
+        experience: null,
+        location: null,
+        cover_letter: null,
+        resume_url: null,
+        skills: [],
+        position: "Applicant",
+      };
+
+      const res = await fetch(`${API_URL}/api/applicants`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (data.error?.toLowerCase().includes("already applied")) {
+          alert("⚠️ You have already applied for this job.");
+        } else {
+          alert(data.error || "Failed to apply for this job.");
+        }
+        return;
+      }
+
+      navigate("/you-applied", { state: { job } });
+    } catch (err) {
+      console.error("Application error:", err);
+      alert("Failed to submit application.");
+    } finally {
+      setApplying(false);
+    }
+  };
 
   if (loading) return <p className="loading-text">Loading job...</p>;
   if (error) return <p className="error-text">{error}</p>;
@@ -122,9 +125,10 @@ const JobDetails = () => {
           )}
 
           <button
-            className="apply-btn"
+            className={`apply-btn ${!isLoggedIn ? "disabled-btn" : ""}`}
             onClick={handleApply}
-            disabled={applying}
+            disabled={applying || !isLoggedIn}
+            title={!isLoggedIn ? "Log in to apply" : ""}
           >
             {applying ? "Applying..." : "Apply Now"}
           </button>
