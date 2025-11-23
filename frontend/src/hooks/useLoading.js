@@ -9,17 +9,17 @@ const useLoading = (minimumLoadingTime = 1000) => {
     let slowConnectionTimer;
     let minimumTimer;
 
-    // Check if connection is slow (taking more than 500ms)
+
     slowConnectionTimer = setTimeout(() => {
       setIsSlowConnection(true);
     }, 500);
 
-    // Minimum loading time to prevent flash
+
     minimumTimer = setTimeout(() => {
       setIsLoading(false);
     }, minimumLoadingTime);
 
-    // Simulate actual loading completion
+
     const handleLoad = () => {
       clearTimeout(slowConnectionTimer);
       clearTimeout(minimumTimer);
@@ -27,7 +27,7 @@ const useLoading = (minimumLoadingTime = 1000) => {
       setIsSlowConnection(false);
     };
 
-    // Check if page is already loaded
+
     if (document.readyState === 'complete') {
       handleLoad();
     } else {

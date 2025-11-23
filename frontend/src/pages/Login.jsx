@@ -41,15 +41,14 @@ const LogInPage = () => {
 
       if (!response.ok) throw new Error(data.error || "Login failed");
 
-      // Store user info in localStorage
+
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("id", data.user.id);
       localStorage.setItem("token", data.token || data.accessToken || "");
 
-      // Show modal
+
       setLoginSuccess(true);
 
-      // Auto navigate after 2.5s
       setTimeout(() => {
         setLoginSuccess(false);
         navigate("/find-work");

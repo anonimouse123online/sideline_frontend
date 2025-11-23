@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CheckCircle, MapPin, Clock, DollarSign, ArrowLeft, Mail } from "lucide-react";
 import Navbar from "../components/Navbar";
-import Loading from '../function/loading'; // Import your loading component
+import Loading from '../function/loading'; 
 import "./YouApplied.css";
 
 const YouApplied = () => {
@@ -13,7 +13,6 @@ const YouApplied = () => {
   const job = location.state?.job;
 
   useEffect(() => {
-    // Simulate loading time for better UX
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1000);
@@ -21,7 +20,6 @@ const YouApplied = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Show loading component while processing
   if (loading) {
     return <Loading />;
   }

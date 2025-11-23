@@ -14,16 +14,16 @@ const Profile = () => {
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
-  // Jobs posted state
+
   const [userJobs, setUserJobs] = useState([]);
   const [jobsLoading, setJobsLoading] = useState(false);
   const [isJobsModalOpen, setIsJobsModalOpen] = useState(false);
   const [viewingApplicants, setViewingApplicants] = useState(null);
 
-  // Applied jobs modal state
+
   const [isAppliedModalOpen, setIsAppliedModalOpen] = useState(false);
 
-  // Fetch profile
+
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
@@ -46,7 +46,7 @@ const Profile = () => {
     fetchProfile();
   }, []);
 
-  // Fetch jobs posted by user
+
   const fetchUserJobs = async () => {
     setJobsLoading(true);
     try {
@@ -159,7 +159,6 @@ const Profile = () => {
       <Navbar />
       <main className="profile-container">
         <div className="profile-card">
-          {/* Profile Header */}
           <div className="profile-header">
             <img src={userProfile.profilePic ? `${API_URL}${userProfile.profilePic}` : "https://via.placeholder.com/150"} alt="User avatar" className="profile-avatar"/>
             <div className="profile-info">
@@ -171,7 +170,6 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Account Info */}
           <div className="profile-section">
             <div className="section-header"><h2>Account Info</h2></div>
             {isEditing ? (
@@ -207,7 +205,7 @@ const Profile = () => {
 
            <button
   className="fetch-applied-btn"
-  onClick={() => setIsAppliedModalOpen(true)} // open modal
+  onClick={() => setIsAppliedModalOpen(true)} 
 >
   View Applied Jobs
 </button>
@@ -257,11 +255,11 @@ const Profile = () => {
   </div>
 )}
 
-      {/* Applied Jobs Modal */}
+=
 <AppliedJobs
-  userId={userProfile.id}         // pass logged-in user's id
-  isVisible={isAppliedModalOpen}  // controls modal visibility
-  onClose={() => setIsAppliedModalOpen(false)} // closes modal
+  userId={userProfile.id}        
+  isVisible={isAppliedModalOpen} 
+  onClose={() => setIsAppliedModalOpen(false)} 
 />
 
       {/* View Applicants Modal */}

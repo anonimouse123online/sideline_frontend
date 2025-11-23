@@ -8,7 +8,7 @@ import './Signup.css';
 const API_URL = import.meta.env.VITE_API_URL;
 
 const SignUpPage = () => {
-  const navigate = useNavigate(); // ✅ FIX: React Router navigation
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -53,7 +53,6 @@ const SignUpPage = () => {
 
       alert("✅ Account created successfully!");
 
-      // ⬇⬇⬇ FIXED NAVIGATION FOR WEB + MOBILE
       navigate("/login");
 
     } catch (err) {

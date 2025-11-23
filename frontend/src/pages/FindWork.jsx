@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, Clock, DollarSign, Briefcase, Star, AlertCircle } from 'lucide-react';
 import Navbar from '../components/Navbar';
-import Loading from '../function/loading'; // Import your loading component
+import Loading from '../function/loading'; 
 import './FindWork.css';
 
 const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').trim();
@@ -63,7 +63,7 @@ const FindWork = () => {
       return;
     }
 
-    // Show loading and navigate immediately
+
     setNavigatingToJob(true);
     navigate(`/job/${jobId}`);
   };
@@ -88,12 +88,12 @@ const FindWork = () => {
     return matchesSearch && matchesLocation && matchesCategory;
   });
 
-  // Show only your imported loading component when navigating to job
+
   if (navigatingToJob) {
     return <Loading />;
   }
 
-  // Show your imported loading component during initial load
+
   if (loading) {
     return <Loading />;
   }
@@ -237,16 +237,6 @@ const FindWork = () => {
                                   : 'Recently'}
                               </span>
                             </div>
-
-                            <button
-                              className="apply-btn"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                alert(`Application sent for "${job.title}"`);
-                              }}
-                            >
-                              Apply Now
-                            </button>
                           </div>
                         </div>
                       </div>

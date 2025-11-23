@@ -23,9 +23,9 @@ const App = () => {
 
   return (
     <>
-      <Navbar /> {/* Navbar stays on top */}
+      <Navbar /> 
       
-      {/* Page container centers content */}
+
       <div className="page-container">
         <Routes>
           <Route path="/" element={<Explore />} />

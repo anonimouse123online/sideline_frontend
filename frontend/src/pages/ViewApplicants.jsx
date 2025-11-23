@@ -103,7 +103,7 @@ const ViewApplicants = ({ job, onClose, isVisible }) => {
               {applicants.map((applicant) => {
                 const fullName = `${applicant.first_name || ''} ${applicant.last_name || ''}`.trim() || 'Unknown Applicant';
 
-                // Safe skills parsing
+
                 let skills = [];
                 if (applicant.skills) {
                   if (Array.isArray(applicant.skills)) {

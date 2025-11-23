@@ -8,7 +8,7 @@ import Navbar from '../components/Navbar';
 import './PostJob.css';
 import { useNavigate } from 'react-router-dom';
 
-// ✅ Fixed: Use backticks + fallback + trim
+
 const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').trim();
 
 const PostJob = () => {
@@ -38,7 +38,7 @@ const PostJob = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Check authentication when component mounts
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
@@ -92,7 +92,7 @@ const PostJob = () => {
     }));
   };
 
-  // ✅ UPDATED: Correct template literal + robust error handling + AUTHENTICATION
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -104,7 +104,7 @@ const PostJob = () => {
       return;
     }
 
-    // Check if user is authenticated
+
     const token = localStorage.getItem('token');
     if (!token) {
       setError('Please log in to post a job.');
@@ -127,25 +127,25 @@ const PostJob = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // ✅ ADD AUTHENTICATION HEADER
+          'Authorization': `Bearer ${token}` 
         },
         body: JSON.stringify(payload),
       });
 
-      // 🔒 Guard 1: Check content-type before parsing
+
       const contentType = response.headers.get('content-type');
       if (!contentType?.includes('application/json')) {
         const text = await response.text();
         throw new Error(`Expected JSON, got HTML: ${text.substring(0, 200)}...`);
       }
 
-      // 🔒 Guard 2: Handle HTTP errors
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         
-        // Handle specific error cases
+
         if (response.status === 401) {
-          localStorage.removeItem('token'); // Clear invalid token
+          localStorage.removeItem('token'); 
           localStorage.removeItem('user');
           setIsAuthenticated(false);
           throw new Error('Session expired. Please log in again.');
@@ -168,7 +168,7 @@ const PostJob = () => {
     }
   };
 
-  // Show loading or redirect message if not authenticated
+
   if (!isAuthenticated) {
     return (
       <div className="postjob-container">
@@ -198,7 +198,7 @@ const PostJob = () => {
     );
   }
 
-  // Options
+
   const categories = [
     'Creative & Design',
     'Admin & Support',

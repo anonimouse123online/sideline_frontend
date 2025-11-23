@@ -1,6 +1,6 @@
 // Loading.jsx
 import React from 'react';
-import Navbar from '../components/Navbar'; // Import your Navbar
+import Navbar from '../components/Navbar'; 
 import '../function/loading.jsx';
 
 const Loading = () => {

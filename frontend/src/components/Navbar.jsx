@@ -9,7 +9,7 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  // Check if user is logged in on component mount
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -24,16 +24,14 @@ const Navbar = () => {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  // Logout function
-  const handleLogout = () => {
-    // Clear all login-related info
-    localStorage.removeItem("token");      // Auth token
-    localStorage.removeItem("user");       // User info
-    localStorage.removeItem("id");         // User ID if stored separately
 
-    setUser(null);                         // Update state so UI knows user is logged out
-    navigate("/login");                     // Redirect to login page (optional)
-    setIsMenuOpen(false);                   // Close mobile menu if open
+  const handleLogout = () => {
+    localStorage.removeItem("token");      
+    localStorage.removeItem("user");      
+
+    setUser(null);                         
+    navigate("/login");                    
+    setIsMenuOpen(false);                 
   };
 
   const handleSearch = (e) => {
