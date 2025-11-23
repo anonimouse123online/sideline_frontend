@@ -62,8 +62,6 @@ const FindWork = () => {
       console.error("Job ID missing");
       return;
     }
-
-    // Show loading and navigate immediately
     setNavigatingToJob(true);
     navigate(`/job/${jobId}`);
   };
@@ -88,15 +86,8 @@ const FindWork = () => {
     return matchesSearch && matchesLocation && matchesCategory;
   });
 
-  // Show only your imported loading component when navigating to job
-  if (navigatingToJob) {
-    return <Loading />;
-  }
-
-  // Show your imported loading component during initial load
-  if (loading) {
-    return <Loading />;
-  }
+  if (navigatingToJob) return <Loading />;
+  if (loading) return <Loading />;
 
   return (
     <div className="findwork-container">
@@ -111,7 +102,6 @@ const FindWork = () => {
           Discover opportunities that fit your lifestyle and skills
         </p>
 
-        {/* Single set of action buttons */}
         <div className="hero-actions">
           <button
             className="action-btn find-jobs-btn"
@@ -210,8 +200,8 @@ const FindWork = () => {
                                 {job.min_budget && job.max_budget
                                   ? `$${job.min_budget} – $${job.max_budget}`
                                   : job.min_budget
-                                    ? `From $${job.min_budget}`
-                                    : 'Negotiable'}
+                                  ? `From $${job.min_budget}`
+                                  : 'Negotiable'}
                               </span>
                             </div>
                           </div>
@@ -263,6 +253,16 @@ const FindWork = () => {
             <button className="load-more-btn">Load More Jobs</button>
           </div>
         )}
+      </div>
+
+      {/* Mobile-only Post Job Button */}
+      <div className="mobile-post-job-btn-container">
+        <button
+          className="mobile-post-job-btn"
+          onClick={() => navigate('/post-job')}
+        >
+          Post a Job
+        </button>
       </div>
     </div>
   );
