@@ -8,7 +8,6 @@ const Navbar = () => {
   const [user, setUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-  console.log('Current location:', location);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
