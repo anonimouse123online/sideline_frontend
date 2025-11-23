@@ -1,0 +1,393 @@
+/* ====================== Profile Page ====================== */
+.profile-page {
+  background-color: #f7f7f7;
+  min-height: 100vh;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.profile-container {
+  max-width: 900px;
+  margin: 40px auto 0;
+}
+
+.profile-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  padding: 40px;
+  margin-bottom: 40px;
+}
+
+/* ====================== Profile Header ====================== */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-name {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #222;
+  margin: 0 0 8px;
+}
+
+.profile-email,
+.profile-phone,
+.profile-role {
+  font-size: 1.1rem;
+  color: #666;
+  margin: 0 0 8px;
+}
+
+/* ====================== Section Styling ====================== */
+.profile-section {
+  margin-bottom: 40px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+}
+
+/* ====================== Buttons ====================== */
+button {
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 12px;
+  transition: all 0.2s ease-in-out;
+}
+
+.edit-profile-btn,
+.post-job-btn,
+.logout-btn,
+.fetch-jobs-btn,
+.view-applicants-btn,
+.modal-back-btn {
+  padding: 12px 24px;
+  font-size: 1rem;
+  border: none;
+  color: white;
+}
+
+.edit-profile-btn,
+.fetch-jobs-btn,
+.post-job-btn,
+.modal-back-btn,
+.view-applicants-btn {
+  background-color: #007a87;
+}
+
+.edit-profile-btn:hover,
+.fetch-jobs-btn:hover,
+.post-job-btn:hover,
+.modal-back-btn:hover,
+.view-applicants-btn:hover {
+  background-color: #005f6b;
+}
+
+.logout-btn {
+  background-color: #ff385c;
+}
+
+.logout-btn:hover {
+  background-color: #e31c5f;
+}
+
+/* ====================== Modal Overlay ====================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* ====================== Modal Container ====================== */
+.modal-container {
+  background-color: #fff;
+  border-radius: 16px;
+  max-width: 700px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+  position: relative;
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.3s ease-in-out;
+}
+
+/* ====================== Modal Header ====================== */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 0.5rem;
+}
+
+.modal-header h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+}
+
+.modal-close-btn {
+  background: #ff4d4f;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.modal-close-btn:hover {
+  background: #ff7875;
+  transform: scale(1.1);
+}
+
+/* ====================== Back Button ====================== */
+.modal-back-btn {
+  align-self: flex-start;
+  margin-bottom: 1rem;
+}
+
+/* ====================== Modal Content ====================== */
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Job Item */
+.job-item {
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  background-color: #fafafa;
+  transition: all 0.2s ease-in-out;
+}
+
+.job-item:hover {
+  background-color: #f5f5f5;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+.job-item h3 {
+  margin: 0 0 0.4rem 0;
+  font-size: 1.15rem;
+  color: #111;
+  font-weight: 500;
+}
+
+.job-item p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.4;
+}
+
+/* Job Action Buttons */
+.job-item-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.view-applicants-btn {
+  background-color: #007a87;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.view-applicants-btn:hover {
+  background-color: #005f6b;
+}
+
+/* Loading & Empty State */
+.modal-loading,
+.modal-empty {
+  text-align: center;
+  font-size: 1rem;
+  color: #888;
+  padding: 2rem 1rem;
+  font-style: italic;
+}
+
+/* ====================== Animations ====================== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ====================== Scrollbar Styling ====================== */
+.modal-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 8px;
+}
+
+.modal-container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 8px;
+}
+
+.modal-container::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+/* ====================== Responsive Design ====================== */
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .job-item {
+    padding: 12px;
+  }
+
+  .job-item-actions {
+    flex-direction: column;
+  }
+
+  .modal-container {
+    width: 95%;
+    padding: 1.5rem 1rem 1rem 1rem;
+  }
+
+  .modal-header h2 {
+    font-size: 1.4rem;
+  }
+}
+/* Applied Jobs / Jobs Posted Modals */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-container {
+  background: #fff;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.modal-close-btn {
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.job-item {
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+}
+
+.job-item h3 {
+  margin: 0 0 5px 0;
+}
+
+.job-item p {
+  margin: 3px 0;
+}
+
+.modal-loading,
+.modal-empty {
+  text-align: center;
+  padding: 20px;
+  color: #555;
+}
+
+.fetch-applied-btn {
+  background-color: #2b6cb0;
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.fetch-applied-btn:hover {
+  background-color: #2c5282;
+}

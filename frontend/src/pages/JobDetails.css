@@ -1,0 +1,139 @@
+.job-details-page {
+  background-color: #fafafa;
+  min-height: 100vh;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.job-details-container {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  max-width: 900px;
+  width: 100%;
+  padding: 30px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.job-banner {
+  width: 100%;
+  height: 300px;
+  border-radius: 16px;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+/* Job title and company */
+.job-details-container h1 {
+  font-size: 2rem;
+  color: #222;
+  margin-bottom: 5px;
+}
+
+.company {
+  color: #777;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+}
+
+/* Job Info Icons */
+.details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.details div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f9f9f9;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+/* Headings */
+.job-details-container h3 {
+  font-size: 1.3rem;
+  color: #333;
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
+
+/* Description */
+.job-details-container p {
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Skills Section */
+.job-details-container ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.job-details-container ul li {
+  background-color: #f0f3ff;
+  color: #4154f1;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .job-details-container {
+    padding: 20px;
+  }
+
+  .job-banner {
+    height: 200px;
+  }
+
+  .job-details-container h1 {
+    font-size: 1.6rem;
+  }
+
+  .details {
+    gap: 10px;
+  }
+}
+/* Apply Button */
+.apply-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #4154f1;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 20px;
+  margin-bottom: 25px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(65, 84, 241, 0.25);
+}
+
+.apply-btn:hover {
+  background-color: #2f3ee0;
+  transform: translateY(-2px);
+}
+
+.apply-btn svg {
+  margin-right: 5px;
+}
+
