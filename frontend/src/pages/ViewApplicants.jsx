@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Mail, User, Calendar, Phone, MapPin, Briefcase, Download } from 'lucide-react';
 import './ViewApplicants.css';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:10000';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const ViewApplicants = ({ job, onClose, isVisible }) => {
   const [applicants, setApplicants] = useState([]);
@@ -11,17 +11,25 @@ const ViewApplicants = ({ job, onClose, isVisible }) => {
 
   useEffect(() => {
     if (isVisible && job) {
+      console.log('🔎 Fetching applicants for job:', job); // Debug log
       fetchApplicants();
     }
   }, [job, isVisible]);
 
   const fetchApplicants = async () => {
+    if (!job?.id) {
+      console.warn('⚠️ No job ID found. Cannot fetch applicants.');
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
       const res = await fetch(`${API_URL}/api/applicants/jobs/${job.id}/applicants`);
+      console.log('📡 API response status:', res.status); // Debug
       if (!res.ok) throw new Error(`Failed to fetch applicants: ${res.status}`);
       const data = await res.json();
+      console.log('📥 Applicants fetched:', data); // Debug
       setApplicants(data);
     } catch (err) {
       console.error('Error fetching applicants:', err);
@@ -32,21 +40,30 @@ const ViewApplicants = ({ job, onClose, isVisible }) => {
   };
 
   const handleStatusChange = async (applicantId, newStatus) => {
-    try {
-      const res = await fetch(`${API_URL}/api/applicants/${applicantId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
-      });
-      if (!res.ok) throw new Error('Failed to update status');
-      setApplicants(prev =>
-        prev.map(a => (a.id === applicantId ? { ...a, status: newStatus } : a))
-      );
-    } catch (err) {
-      console.error('Error updating status:', err);
-      alert('Failed to update application status');
-    }
-  };
+  // SEND EXACT BACKEND STATUS
+  const statusToSend = newStatus; // no mapping
+
+  console.log("Updating applicant", applicantId, "status as:", statusToSend);
+
+  try {
+    const res = await fetch(`${API_URL}/api/applicants/${applicantId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: statusToSend }),
+    });
+
+    if (!res.ok) throw new Error("Failed to update status");
+
+    setApplicants(prev =>
+      prev.map(a => (a.id === applicantId ? { ...a, status: statusToSend } : a))
+    );
+  } catch (err) {
+    console.error("Error updating status:", err);
+    alert("Failed to update application status");
+  }
+};
+
+
 
   const handleDownloadResume = (applicant) => {
     if (applicant.resume_url) {
@@ -65,6 +82,12 @@ const ViewApplicants = ({ job, onClose, isVisible }) => {
   };
 
   if (!isVisible) return null;
+
+  const displayStatus = (status) => {
+  if (!status) return 'Pending';
+  if (status === 'approved') return 'Accepted';  // translate for UI
+  return status.charAt(0).toUpperCase() + status.slice(1);
+};
 
   return (
     <div className="applicants-modal-overlay">
@@ -102,9 +125,8 @@ const ViewApplicants = ({ job, onClose, isVisible }) => {
             <div className="applicants-list">
               {applicants.map((applicant) => {
                 const fullName = `${applicant.first_name || ''} ${applicant.last_name || ''}`.trim() || 'Unknown Applicant';
-
-
                 let skills = [];
+
                 if (applicant.skills) {
                   if (Array.isArray(applicant.skills)) {
                     skills = applicant.skills;
@@ -144,15 +166,19 @@ const ViewApplicants = ({ job, onClose, isVisible }) => {
                       </div>
                       <div className="applicant-status-section">
                         <select
-                          className={`status-select status-${applicant.status || 'pending'}`}
-                          value={applicant.status || 'pending'}
-                          onChange={(e) => handleStatusChange(applicant.id, e.target.value)}
-                        >
-                          <option value="pending">Pending</option>
-                          <option value="reviewed">Reviewed</option>
-                          <option value="accepted">Accepted</option>
-                          <option value="rejected">Rejected</option>
-                        </select>
+  value={applicant.status === 'approved' ? 'accepted' : applicant.status || 'pending'}
+  onChange={(e) => handleStatusChange(applicant.id, e.target.value)}
+>
+  <option value="pending">Pending</option>
+  <option value="reviewed">Reviewed</option>
+  <option value="accepted">Accepted</option>
+  <option value="rejected">Rejected</option>
+</select>
+<span>Status: {displayStatus(applicant.status)}</span>
+
+<span>Status: {displayStatus(applicant.status)}</span>
+
+
                       </div>
                     </div>
 

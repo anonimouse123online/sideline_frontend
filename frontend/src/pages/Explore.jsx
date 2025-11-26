@@ -1,23 +1,36 @@
 // src/pages/Explore.jsx
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { Heart, Star, Clock, MapPin, DollarSign, CheckCircle } from 'lucide-react';
-import Loading from '../function/loading'; // Import your loading component
+import { Heart, Star, Clock, MapPin, DollarSign, CheckCircle, X } from 'lucide-react';
+import Loading from '../function/loading';
 import './Explore.css';
-import { useNavigate } from "react-router-dom";
+import './SiteNoticeModal.css';
 
 const Explore = () => {
   const [favorites, setFavorites] = useState(new Set());
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [loaded, setLoaded] = useState(false); // ✅ for confirmation message
+  const [loaded, setLoaded] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
   const location = useLocation();
-  const navigate = useNavigate(); // ✅ MUST be inside component
+  const navigate = useNavigate();
 
   const query = new URLSearchParams(location.search).get('search');
   const API_URL = import.meta.env.VITE_API_URL;
+
+
+  // 🔥 Show modal once per user
+  useEffect(() => {
+    const alreadyShown = localStorage.getItem("siteNoticeShown");
+
+    if (!alreadyShown) {
+      setModalOpen(true);  // show modal
+      localStorage.setItem("siteNoticeShown", "true"); // mark as shown
+    }
+  }, []);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -57,13 +70,34 @@ const Explore = () => {
     setFavorites(newFavorites);
   };
 
-  // Show loading component during initial load
   if (loading) {
     return <Loading />;
   }
 
   return (
     <>
+      {/* 🔥 ONE-TIME MODAL POPUP */}
+      {modalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <button className="close-btn" onClick={() => setModalOpen(false)}>
+              <X size={20} />
+            </button>
+
+            <h2>⚠️ Site Under Development</h2>
+            <p>
+              This website is currently under active development.
+              If you find any bugs, broken pages, or system issues,
+              kindly notify the team. Thank you!
+            </p>
+
+            <button className="ok-btn" onClick={() => setModalOpen(false)}>
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
+
       <Navbar />
 
       <main className="explore-page">
@@ -84,18 +118,20 @@ const Explore = () => {
                   <div
                     className="job-card"
                     key={job.id}
-                    onClick={() => job?.id ? navigate(`/job/${job.id}`) : console.error("Job ID missing")}
+                    onClick={() =>
+                      job?.id ? navigate(`/job/${job.id}`) : console.error("Job ID missing")
+                    }
                     style={{ cursor: 'pointer' }}
                   >
-                    {/* Remove image container */}
-
                     <div className="job-content">
                       <div className="job-header">
                         <h3 className="job-title">{job.title}</h3>
+
                         <div className="job-rating">
                           <Star size={16} className="star-icon" />
                           <span className="rating-text">4.8</span>
                         </div>
+
                         <button
                           className="favorite-btn"
                           onClick={(e) => toggleFavorite(job.id, e)}
@@ -109,20 +145,18 @@ const Explore = () => {
                         </button>
                       </div>
 
-                      <p className="job-company">{job.company || 'Unknown Company'}</p>
+                      <p className="job-company">
+                        {job.company || 'Unknown Company'}
+                      </p>
 
                       <div className="job-details">
                         <div className="job-detail">
                           <MapPin size={16} className="detail-icon" />
-                          <span className="detail-text">
-                            {job.location || 'Metro Manila'}
-                          </span>
+                          <span className="detail-text">{job.location || 'Metro Manila'}</span>
                         </div>
                         <div className="job-detail">
                           <Clock size={16} className="detail-icon" />
-                          <span className="detail-text">
-                            {job.jobtype || 'Full-time'}
-                          </span>
+                          <span className="detail-text">{job.jobtype || 'Full-time'}</span>
                         </div>
                         <div className="job-detail">
                           <DollarSign size={16} className="detail-icon" />
@@ -134,11 +168,9 @@ const Explore = () => {
 
                       {job.skills && job.skills.length > 0 && (
                         <div className="job-tags">
-                          {Array.isArray(job.skills) &&
-                            job.skills.map((skill, index) => (
-                              <span key={index} className="job-tag">{skill}</span>
-                            ))
-                          }
+                          {job.skills.map((skill, index) => (
+                            <span key={index} className="job-tag">{skill}</span>
+                          ))}
                         </div>
                       )}
                     </div>

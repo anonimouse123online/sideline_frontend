@@ -6,7 +6,8 @@ import Navbar from '../components/Navbar';
 import Loading from '../function/loading'; 
 import './FindWork.css';
 
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').trim();
+const API_URL = import.meta.env.VITE_API_URL;
+
 
 const FindWork = () => {
   const navigate = useNavigate();

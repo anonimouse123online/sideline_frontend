@@ -1,12 +1,14 @@
-// src/pages/Profile.jsx
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import Loading from '../function/loading';
-import ViewApplicants from '../pages/ViewApplicants';
-import AppliedJobs from '../pages/AppliedJobs';
+import Loading from "../function/loading";
+import ViewApplicants from "../pages/ViewApplicants";
+import AppliedJobs from "../pages/AppliedJobs";
+import VerifyAccountModal from "../pages/VerifyAccountModal";
 import "./Profile.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
+
+
 
 const Profile = () => {
   const [userProfile, setUserProfile] = useState(null);
@@ -14,72 +16,110 @@ const Profile = () => {
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
-
   const [userJobs, setUserJobs] = useState([]);
   const [jobsLoading, setJobsLoading] = useState(false);
   const [isJobsModalOpen, setIsJobsModalOpen] = useState(false);
   const [viewingApplicants, setViewingApplicants] = useState(null);
-
-
   const [isAppliedModalOpen, setIsAppliedModalOpen] = useState(false);
+  const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
 
+  // --------------------- FETCH PROFILE --------------------- //
+  const fetchProfile = async () => {
+  setLoading(true);
+  setError(null);
+  try {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (!storedUser?.id || !storedUser?.email) throw new Error("Please log in first.");
 
+    console.log("📡 Fetching profile for user:", storedUser.id);
+
+    // Fetch profile
+    const profileRes = await fetch(`${API_URL}/api/profile?email=${storedUser.email}`);
+    if (!profileRes.ok) {
+      const data = await profileRes.json();
+      throw new Error(data.error || "Failed to fetch profile");
+    }
+    const profileData = await profileRes.json();
+
+    // Fetch applicant info (for email verification)
+    const applicantsRes = await fetch(`${API_URL}/api/applicants/user/${storedUser.id}/applications`);
+    if (!applicantsRes.ok) {
+      const data = await applicantsRes.json();
+      throw new Error(data.error || "Failed to fetch applicant data");
+    }
+    const applicantsData = await applicantsRes.json();
+    console.log("🛡️ Applicants data returned:", applicantsData);
+    const applicant = applicantsData.find(a => Number(a.user_id) === Number(storedUser.id));
+    console.log("✅ Profile fetched:", profileData.user);
+    console.log("🛡️ Applicant verification info:", applicant);
+
+    setUserProfile({
+      ...profileData.user,
+      applicantId: applicant?.id,
+      isVerified: applicant?. applicant.isVerified === true
+    });
+  } catch (err) {
+    setError(err.message);
+    console.error("❌ Fetch profile error:", err);
+  } finally {
+    setLoading(false);
+  }
+};
+
+  // --------------------- POLL VERIFICATION STATUS --------------------- //
   useEffect(() => {
-    const fetchProfile = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const storedUser = JSON.parse(localStorage.getItem("user"));
-        if (!storedUser || !storedUser.email) throw new Error("Please log in first.");
+  if (!userProfile?.id) return;
+  console.log("⏱️ Starting verification polling for user:", userProfile.id);
+  const interval = setInterval(async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/applicants/user/${userProfile.id}/applications`);
+      if (!res.ok) throw new Error("Failed to fetch applications");
+      const applications = await res.json();
+      console.log("🔄 Verification poll result:", applications);
+      const latestApp = applications[0]; 
+      setUserProfile(prev => ({
+        ...prev,
+        applicantId: latestApp?.id,
+        isVerified: latestApp?.isVerified || false
+      }));
+    } catch (err) {
+      console.error("❌ Verification poll error:", err);
+    }
+  }, 10000);
 
-        const res = await fetch(`${API_URL}/api/profile?email=${storedUser.email}`);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Failed to fetch profile");
-        setUserProfile(data.user);
-      } catch (err) {
-        console.error("Fetch profile error:", err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProfile();
-  }, []);
+  return () => {
+    clearInterval(interval);
+  };
+}, [userProfile?.id]);
 
-
+  // --------------------- FETCH USER JOBS --------------------- //
   const fetchUserJobs = async () => {
     setJobsLoading(true);
     try {
       const token = localStorage.getItem("token");
-      if (!token) return;
+      if (!token) throw new Error("Authentication token not found.");
 
-      const res = await fetch(`${API_URL}/api/jobs`, {
-        headers: { "Authorization": `Bearer ${token}` }
+      console.log("📡 Fetching jobs for logged-in user...");
+
+      const res = await fetch(`${API_URL}/api/jobs/user/me`, {
+        headers: { Authorization: `Bearer ${token}` }
       });
+
       const data = await res.json();
+      console.log("📥 Jobs fetched from backend:", data);
+
       if (!res.ok) throw new Error(data.error || "Failed to fetch jobs");
-
-      const storedUser = JSON.parse(localStorage.getItem("user"));
-      const storedEmail = storedUser.email.toLowerCase();
-      const myJobs = Array.isArray(data)
-        ? data.filter(job => job.contact_email?.toLowerCase() === storedEmail)
-        : [];
-
-      setUserJobs(myJobs);
+      setUserJobs(data || []);
     } catch (err) {
-      console.error("Fetch user jobs error:", err);
-      setError(err.message);
+      console.error("❌ Fetch user jobs error:", err);
+      alert(err.message);
     } finally {
       setJobsLoading(false);
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setUserProfile(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSaveProfile = async (e) => {
+  // --------------------- SAVE PROFILE --------------------- //
+  const handleSaveProfile = async e => {
     e.preventDefault();
     setLoading(true);
     try {
@@ -91,14 +131,14 @@ const Profile = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
           email: storedUser.email,
           firstName: userProfile.firstName,
           lastName: userProfile.lastName,
-          phone: userProfile.phone,
-        }),
+          phone: userProfile.phone
+        })
       });
 
       const data = await res.json();
@@ -106,11 +146,12 @@ const Profile = () => {
 
       alert("Profile updated successfully!");
       setIsEditing(false);
-
-      const updatedUser = { ...storedUser, firstName: userProfile.firstName, lastName: userProfile.lastName };
-      localStorage.setItem("user", JSON.stringify(updatedUser));
+      localStorage.setItem("user", JSON.stringify({
+        ...storedUser,
+        firstName: userProfile.firstName,
+        lastName: userProfile.lastName
+      }));
     } catch (err) {
-      console.error("Update profile error:", err);
       alert(err.message);
     } finally {
       setLoading(false);
@@ -123,8 +164,12 @@ const Profile = () => {
     window.location.href = "/login";
   };
 
-  if (loading) return <Loading />;
+  // --------------------- FETCH PROFILE ON MOUNT --------------------- //
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
+  if (loading) return <Loading />;
   if (error) return (
     <div className="profile-page">
       <Navbar />
@@ -132,9 +177,7 @@ const Profile = () => {
         <div className="error-card">
           <h2>⚠️ Oops!</h2>
           <p>{error}</p>
-          <button className="login-btn" onClick={handleLoginRedirect}>
-            Go to Login
-          </button>
+          <button className="login-btn" onClick={handleLoginRedirect}>Go to Login</button>
         </div>
       </main>
     </div>
@@ -146,37 +189,45 @@ const Profile = () => {
       <main className="profile-container">
         <div className="info-card">
           <p>No profile data available.</p>
-          <button className="login-btn" onClick={handleLoginRedirect}>
-            Go to Login
-          </button>
+          <button className="login-btn" onClick={handleLoginRedirect}>Go to Login</button>
         </div>
       </main>
     </div>
   );
 
+  // --------------------- RENDER --------------------- //
   return (
     <div className="profile-page">
       <Navbar />
       <main className="profile-container">
         <div className="profile-card">
           <div className="profile-header">
-            <img src={userProfile.profilePic ? `${API_URL}${userProfile.profilePic}` : "https://via.placeholder.com/150"} alt="User avatar" className="profile-avatar"/>
+            <img 
+            src="https://placehold.co/150x150/4f46e5/white?text=User" 
+            alt="User avatar" 
+            className="profile-avatar"
+            style={{ borderRadius: '50%', width: '100px', height: '100px', objectFit: 'cover', border: '3px solid #4f46e5' }}
+/>
             <div className="profile-info">
               <h1 className="profile-name">{userProfile.firstName} {userProfile.lastName}</h1>
               <p className="profile-email">📧 {userProfile.email}</p>
               <p className="profile-phone">📱 {userProfile.phone || "—"}</p>
               <p className="profile-role">👤 {userProfile.role || "User"}</p>
+              {userProfile.isVerified 
+                ? <p style={{ color: "#34d399", fontWeight: "bold", marginBottom: "8px" }}>✔️ Verified</p>
+                : <p style={{ color: "#f59e0b", fontWeight: "bold", marginBottom: "8px" }}>⚠️ Not Verified</p>}
               <button className="logout-btn" onClick={handleLoginRedirect}>Logout</button>
             </div>
           </div>
 
+          {/* Account Info */}
           <div className="profile-section">
             <div className="section-header"><h2>Account Info</h2></div>
             {isEditing ? (
               <form onSubmit={handleSaveProfile} className="profile-form">
-                <input type="text" name="firstName" value={userProfile.firstName || ""} onChange={handleInputChange} placeholder="First Name" className="input-field"/>
-                <input type="text" name="lastName" value={userProfile.lastName || ""} onChange={handleInputChange} placeholder="Last Name" className="input-field"/>
-                <input type="tel" name="phone" value={userProfile.phone || ""} onChange={handleInputChange} placeholder="Phone Number" className="input-field"/>
+                <input type="text" value={userProfile.firstName || ""} onChange={e => setUserProfile(prev => ({ ...prev, firstName: e.target.value }))} placeholder="First Name" className="input-field" />
+                <input type="text" value={userProfile.lastName || ""} onChange={e => setUserProfile(prev => ({ ...prev, lastName: e.target.value }))} placeholder="Last Name" className="input-field" />
+                <input type="tel" value={userProfile.phone || ""} onChange={e => setUserProfile(prev => ({ ...prev, phone: e.target.value }))} placeholder="Phone Number" className="input-field" />
                 <div className="form-actions">
                   <button type="submit" className="save-button" disabled={loading}>{loading ? "Saving..." : "💾 Save Changes"}</button>
                   <button type="button" className="cancel-button" onClick={() => setIsEditing(false)} disabled={loading}>❌ Cancel</button>
@@ -198,78 +249,53 @@ const Profile = () => {
           <div className="profile-section">
             <button
               className="fetch-jobs-btn"
-              onClick={() => { fetchUserJobs(); setIsJobsModalOpen(true); }}
+              onClick={async () => {
+                console.log("📌 View Jobs Posted clicked");
+                await fetchUserJobs();
+                setIsJobsModalOpen(true);
+              }}
             >
               View Jobs Posted
             </button>
-
-           <button
-  className="fetch-applied-btn"
-  onClick={() => setIsAppliedModalOpen(true)} 
->
-  View Applied Jobs
-</button>
+            <button className="fetch-applied-btn" onClick={() => setIsAppliedModalOpen(true)}>View Applied Jobs</button>
+            <button className="verify-account-btn" onClick={() => setIsVerifyModalOpen(true)}>Verify Account</button>
           </div>
         </div>
       </main>
+      <VerifyAccountModal
+        isVisible={isVerifyModalOpen}
+        onClose={() => setIsVerifyModalOpen(false)}
+        userId={userProfile?.id}
+        onVerified={() => setUserProfile(prev => ({ ...prev, isVerified: true }))}
+      />
 
-      {/* Jobs Posted Modal */}
-{isJobsModalOpen && (
-  <div className="modal-overlay" onClick={() => setIsJobsModalOpen(false)}>
-    <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-      <div className="modal-header">
-        <button
-          className="back-btn"
-          onClick={() => setIsJobsModalOpen(false)}
-        >
-          ← Back
-        </button>
-        <h2>My Posted Jobs</h2>
-        <button className="modal-close-btn" onClick={() => setIsJobsModalOpen(false)}>×</button>
-      </div>
-      <div className="modal-content">
-        {jobsLoading ? (
-          <p className="modal-loading">Loading your jobs...</p>
-        ) : userJobs.length === 0 ? (
-          <p className="modal-empty">You haven't posted any jobs yet.</p>
-        ) : (
-          <div className="jobs-posted-list">
-            {userJobs.map(job => (
-              <div key={job.id} className="job-item">
-                <h3>{job.title}</h3>
-                <p>{job.description}</p>
-                <div className="job-item-actions">
-                  <button
-                    className="view-applicants-btn"
-                    onClick={() => setViewingApplicants(job)}
-                  >
-                    View Applicants
-                  </button>
-                </div>
-              </div>
-            ))}
+      {isJobsModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsJobsModalOpen(false)}>
+          <div className="modal-container" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <button className="back-btn" onClick={() => setIsJobsModalOpen(false)}>← Back</button>
+              <h2>My Posted Jobs</h2>
+              <button className="modal-close-btn" onClick={() => setIsJobsModalOpen(false)}>×</button>
+            </div>
+            <div className="modal-content">
+              {jobsLoading ? <p>Loading your jobs...</p>
+                : userJobs.length === 0 ? <p>You haven't posted any jobs yet.</p>
+                : userJobs.map(job => (
+                  <div key={job.id} className="job-item">
+                    <h3>{job.title}</h3>
+                    <p>{job.description}</p>
+                    <div className="job-item-actions">
+                      <button className="view-applicants-btn" onClick={() => setViewingApplicants(job)}>View Applicants</button>
+                    </div>
+                  </div>
+                ))}
+            </div>
           </div>
-        )}
-      </div>
-    </div>
-  </div>
-)}
-
-=
-<AppliedJobs
-  userId={userProfile.id}        
-  isVisible={isAppliedModalOpen} 
-  onClose={() => setIsAppliedModalOpen(false)} 
-/>
-
-      {/* View Applicants Modal */}
-      {viewingApplicants && (
-        <ViewApplicants
-          job={viewingApplicants}
-          onClose={() => setViewingApplicants(null)}
-          isVisible={!!viewingApplicants}
-        />
+        </div>
       )}
+
+      <AppliedJobs userId={userProfile.id} isVisible={isAppliedModalOpen} onClose={() => setIsAppliedModalOpen(false)} />
+      {viewingApplicants && <ViewApplicants job={viewingApplicants} onClose={() => setViewingApplicants(null)} isVisible={!!viewingApplicants} />}
     </div>
   );
 };
