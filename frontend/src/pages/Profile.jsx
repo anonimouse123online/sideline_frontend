@@ -43,25 +43,24 @@ const fetchProfile = async () => {
     }
     const profileData = await profileRes.json();
 
-    // 2️⃣ Fetch latest verification info (from applicants table)
+    // 2️⃣ Only fetch applicant/verification info if userProfile is not verified
+    let isVerified = false;
+    let applicantId = null;
+
     const applicantsRes = await fetch(`${API_URL}/api/applicants/user/${storedUser.id}/applications`);
-    if (!applicantsRes.ok) {
-      const data = await applicantsRes.json();
-      throw new Error(data.error || "Failed to fetch verification status");
+    if (applicantsRes.ok) {
+      const applicantsData = await applicantsRes.json();
+      console.log("🛡️ Applicant data returned:", applicantsData);
+
+      const latestApplicant = applicantsData[0];
+      applicantId = latestApplicant?.application_id || null;
+      isVerified = latestApplicant?.status === "approved" || latestApplicant?.email_sent === true;
     }
-    const applicantsData = await applicantsRes.json();
-    console.log("🛡️ Applicant data returned:", applicantsData);
-
-    // Pick latest record (or undefined if none)
-    const latestApplicant = applicantsData[0];
-
-    // Determine if user is verified by admin
-    const isVerified = latestApplicant?.status === "approved" || latestApplicant?.email_sent === true;
 
     // 3️⃣ Update state
     setUserProfile({
       ...profileData.user,
-      applicantId: latestApplicant?.application_id || null,
+      applicantId,
       isVerified
     });
 
@@ -74,32 +73,12 @@ const fetchProfile = async () => {
 };
 
 
-  // --------------------- POLL VERIFICATION STATUS --------------------- //
+
+
   // --------------------- POLL VERIFICATION STATUS --------------------- //
 useEffect(() => {
-  if (!userProfile?.id) return;
-  console.log("⏱️ Starting verification polling for user:", userProfile.id);
-  const interval = setInterval(async () => {
-    try {
-      const res = await fetch(`${API_URL}/api/applicants/user/${userProfile.id}/applications`);
-      if (!res.ok) throw new Error("Failed to fetch applications");
-      const applications = await res.json();
-      console.log("🔄 Verification poll result:", applications);
-      const latestApp = applications[0]; 
-      setUserProfile(prev => ({
-        ...prev,
-        applicantId: latestApp?.application_id,
-        isVerified: latestApp?.isVerified || false
-      }));
-    } catch (err) {
-      console.error("❌ Verification poll error:", err);
-    }
-  }, 10000);
-
-  return () => {
-    clearInterval(interval);
-  };
-}, [userProfile?.id]);
+  fetchProfile();
+}, []);
 
 
   // --------------------- FETCH USER JOBS --------------------- //
