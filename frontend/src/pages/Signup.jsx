@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from '../components/Navbar';
 import './Signup.css';
 
-const API_URL = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 
 
 const SignUpPage = () => {
