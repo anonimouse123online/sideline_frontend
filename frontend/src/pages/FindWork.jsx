@@ -19,6 +19,7 @@ const FindWork = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [navigatingToJob, setNavigatingToJob] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -98,6 +99,16 @@ const FindWork = () => {
   if (loading) {
     return <Loading />;
   }
+  useEffect(() => {
+  const checkMobile = () => {
+    setIsMobile(window.innerWidth <= 768);
+  };
+
+  checkMobile();
+  window.addEventListener('resize', checkMobile);
+
+  return () => window.removeEventListener('resize', checkMobile);
+}, []);
 
   return (
     <div className="findwork-container">
