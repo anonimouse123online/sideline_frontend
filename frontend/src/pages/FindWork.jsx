@@ -19,6 +19,16 @@ const FindWork = () => {
   const [error, setError] = useState('');
   const [navigatingToJob, setNavigatingToJob] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+  const checkMobile = () => {
+    setIsMobile(window.innerWidth <= 768);
+  };
+
+  checkMobile();
+  window.addEventListener('resize', checkMobile);
+
+  return () => window.removeEventListener('resize', checkMobile);
+}, []);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -98,16 +108,7 @@ const FindWork = () => {
   if (loading) {
     return <Loading />;
   }
-  useEffect(() => {
-  const checkMobile = () => {
-    setIsMobile(window.innerWidth <= 768);
-  };
-
-  checkMobile();
-  window.addEventListener('resize', checkMobile);
-
-  return () => window.removeEventListener('resize', checkMobile);
-}, []);
+  
 
   return (
     <div className="findwork-container">
@@ -138,6 +139,15 @@ const FindWork = () => {
           </button>
         </div>
       </div>
+      {isMobile && (
+  <button
+    className="mobile-post-job-btn"
+    onClick={() => navigate('/post-job')}
+  >
+    +
+  </button>
+)}
+
 
       {/* Results Section */}
       <div className="results-section">
