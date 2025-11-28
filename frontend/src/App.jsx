@@ -13,6 +13,7 @@ import JobDetails from "./pages/JobDetails";
 import YouApplied from "./pages/YouApplied";
 import Loading from './function/loading';
 import useLoading from './hooks/useLoading';
+import ForgotPassword from "./pages/ForgotPassword";
 
 const App = () => {
   const { isLoading } = useLoading(1500);
@@ -38,6 +39,7 @@ const App = () => {
           <Route path="/post-job" element={<PostJob />} />
           <Route path="/job/:id" element={<JobDetails />} />
           <Route path="/you-applied" element={<YouApplied />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
         </Routes>
       </div>
     </>

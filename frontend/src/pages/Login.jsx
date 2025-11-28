@@ -138,9 +138,16 @@ const LogInPage = () => {
                 </div>
               </div>
 
-              <div className="forgot-password-wrapper">
-                <a href="#" className="forgot-password-link">Forgot your password?</a>
-              </div>
+             <div className="forgot-password-wrapper">
+  <span
+    className="forgot-password-link"
+    style={{ cursor: "pointer" }}
+    onClick={() => navigate("/forgot-password")}
+  >
+    Forgot your password?
+  </span>
+</div>
+
 
               <button 
                 type="submit" 
