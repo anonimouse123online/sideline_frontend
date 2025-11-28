@@ -75,7 +75,8 @@ const fetchProfile = async () => {
 
 
   // --------------------- POLL VERIFICATION STATUS --------------------- //
-  useEffect(() => {
+  // --------------------- POLL VERIFICATION STATUS --------------------- //
+useEffect(() => {
   if (!userProfile?.id) return;
   console.log("⏱️ Starting verification polling for user:", userProfile.id);
   const interval = setInterval(async () => {
@@ -99,6 +100,7 @@ const fetchProfile = async () => {
     clearInterval(interval);
   };
 }, [userProfile?.id]);
+
 
   // --------------------- FETCH USER JOBS --------------------- //
   const fetchUserJobs = async () => {
