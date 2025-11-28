@@ -24,16 +24,18 @@ const Profile = () => {
   const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
 
   // --------------------- FETCH PROFILE --------------------- //
-  const fetchProfile = async () => {
+  // --------------------- FETCH PROFILE --------------------- //
+const fetchProfile = async () => {
   setLoading(true);
   setError(null);
+
   try {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (!storedUser?.id || !storedUser?.email) throw new Error("Please log in first.");
 
     console.log("📡 Fetching profile for user:", storedUser.id);
 
-    // Fetch profile
+    // 1️⃣ Fetch user profile info
     const profileRes = await fetch(`${API_URL}/api/profile?email=${storedUser.email}`);
     if (!profileRes.ok) {
       const data = await profileRes.json();
@@ -41,23 +43,28 @@ const Profile = () => {
     }
     const profileData = await profileRes.json();
 
-    // Fetch applicant info (for email verification)
+    // 2️⃣ Fetch latest verification info (from applicants table)
     const applicantsRes = await fetch(`${API_URL}/api/applicants/user/${storedUser.id}/applications`);
     if (!applicantsRes.ok) {
       const data = await applicantsRes.json();
-      throw new Error(data.error || "Failed to fetch applicant data");
+      throw new Error(data.error || "Failed to fetch verification status");
     }
     const applicantsData = await applicantsRes.json();
-    console.log("🛡️ Applicants data returned:", applicantsData);
-    const applicant = applicantsData.find(a => Number(a.user_id) === Number(storedUser.id));
-    console.log("✅ Profile fetched:", profileData.user);
-    console.log("🛡️ Applicant verification info:", applicant);
+    console.log("🛡️ Applicant data returned:", applicantsData);
 
+    // Pick latest record (or undefined if none)
+    const latestApplicant = applicantsData[0];
+
+    // Determine if user is verified by admin
+    const isVerified = latestApplicant?.status === "approved" || latestApplicant?.email_sent === true;
+
+    // 3️⃣ Update state
     setUserProfile({
       ...profileData.user,
-      applicantId: applicant?.id,
-      isVerified: applicant?. applicant.isVerified === true
+      applicantId: latestApplicant?.application_id || null,
+      isVerified
     });
+
   } catch (err) {
     setError(err.message);
     console.error("❌ Fetch profile error:", err);
@@ -65,6 +72,7 @@ const Profile = () => {
     setLoading(false);
   }
 };
+
 
   // --------------------- POLL VERIFICATION STATUS --------------------- //
   useEffect(() => {
@@ -79,7 +87,7 @@ const Profile = () => {
       const latestApp = applications[0]; 
       setUserProfile(prev => ({
         ...prev,
-        applicantId: latestApp?.id,
+        applicantId: latestApp?.application_id,
         isVerified: latestApp?.isVerified || false
       }));
     } catch (err) {

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import "./VerifyAccountModal.css";
 
-const API_URL = import.meta.env.VITE_API_URL;
 
+const API_URL = import.meta.env.VITE_API_URL;
 
 
 const VerifyAccountModal = ({ isVisible, onClose, userId, onVerified }) => {
@@ -16,13 +16,21 @@ const VerifyAccountModal = ({ isVisible, onClose, userId, onVerified }) => {
     alert("Please select an option before submitting.");
     return;
   }
+  if (!userId) {
+    console.error("❌ Missing userId!");
+    alert("User ID is missing. Cannot update email status.");
+    return;
+  }
 
   const sent = selectedOption === "yes";
 
   setLoading(true);
   console.log("userId:", userId, "sent_email:", sent);
+  console.log("➡️ Sending verification PUT request", { userId, sent_email: sent });
 
   try {
+    console.log("VerifyAccountModal userId:", userId);
+
     const response = await fetch(`${API_URL}/api/applicants/${userId}/sent-email`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -34,7 +42,7 @@ const VerifyAccountModal = ({ isVisible, onClose, userId, onVerified }) => {
     if (!response.ok) {
       throw new Error(data.error || "Failed to update email status"); 
     }
-
+    console.log("✅ Email status updated:", data);
     alert("✅ Email status updated successfully!");
     if (sent) onVerified();
     onClose();
@@ -65,9 +73,6 @@ const handleApprove = async () => {
     alert(err.message);
   }
 };
-
-
-
 
   return (
     <div className="modal-overlay" onClick={onClose}>
