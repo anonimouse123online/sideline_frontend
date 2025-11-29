@@ -47,7 +47,7 @@ const SignUpPage = () => {
       setIsSuccess(true);
       setTimeout(() => {
   navigate("/login");
-}, 1000);
+}, 2500);
 
     } catch (err) {
       setError(err.message || "Failed to create account. Please try again.");
