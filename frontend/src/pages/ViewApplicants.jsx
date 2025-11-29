@@ -40,16 +40,14 @@ const ViewApplicants = ({ job, onClose, isVisible }) => {
   };
 
   const handleStatusChange = async (applicantId, newStatus) => {
-  // SEND EXACT BACKEND STATUS
-  const statusToSend = newStatus; // no mapping
-
+  const statusToSend = newStatus.toLowerCase().trim();
   console.log("Updating applicant", applicantId, "status as:", statusToSend);
 
   try {
     const res = await fetch(`${API_URL}/api/applicants/${applicantId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: statusToSend }),
+      body: JSON.stringify({ status: statusToSend }), // send the sanitized status
     });
 
     if (!res.ok) throw new Error("Failed to update status");
@@ -62,6 +60,8 @@ const ViewApplicants = ({ job, onClose, isVisible }) => {
     alert("Failed to update application status");
   }
 };
+
+
 
 
 
@@ -84,10 +84,18 @@ const ViewApplicants = ({ job, onClose, isVisible }) => {
   if (!isVisible) return null;
 
   const displayStatus = (status) => {
-  if (!status) return 'Pending';
-  if (status === 'approved') return 'Accepted';  // translate for UI
-  return status.charAt(0).toUpperCase() + status.slice(1);
+  switch (status) {
+    case 'pending': return 'Pending';
+    case 'reviewed': return 'Reviewed';
+    case 'approved': return 'Accepted'; // <-- might confuse "approved" vs "accepted"
+    case 'rejected': return 'Rejected';
+    default: return 'Pending';
+  }
 };
+
+
+
+
 
   return (
     <div className="applicants-modal-overlay">
@@ -166,14 +174,18 @@ const ViewApplicants = ({ job, onClose, isVisible }) => {
                       </div>
                       <div className="applicant-status-section">
                         <select
-  value={applicant.status === 'approved' ? 'accepted' : applicant.status || 'pending'}
+  value={applicant.status || 'pending'}
   onChange={(e) => handleStatusChange(applicant.id, e.target.value)}
 >
   <option value="pending">Pending</option>
-  <option value="reviewed">Reviewed</option>
-  <option value="accepted">Accepted</option>
-  <option value="rejected">Rejected</option>
+<option value="reviewed">Reviewed</option>
+<option value="accepted">Accepted</option>
+<option value="rejected">Rejected</option>
+
 </select>
+
+
+
 <span>Status: {displayStatus(applicant.status)}</span>
 
 <span>Status: {displayStatus(applicant.status)}</span>
@@ -248,6 +260,7 @@ const ViewApplicants = ({ job, onClose, isVisible }) => {
               <span className="stat pending">{applicants.filter(a => a.status === 'pending').length} Pending</span>
               <span className="stat reviewed">{applicants.filter(a => a.status === 'reviewed').length} Reviewed</span>
               <span className="stat accepted">{applicants.filter(a => a.status === 'accepted').length} Accepted</span>
+              <span className="stat rejected">{applicants.filter(a => a.status === 'rejected').length} Rejected</span>
             </div>
           )}
         </div>
