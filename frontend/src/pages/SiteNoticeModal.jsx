@@ -43,7 +43,7 @@ const SiteNoticeModal = () => {
 
         <p className="modal-description">
           If you notice any problems, please report them to our support team via the
-          <a href="/contact" className="support-link"> Contact Page</a>.
+          contact form in the footer.
           Your feedback is invaluable.
         </p>
 
