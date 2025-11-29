@@ -7,6 +7,8 @@ import { Heart, Star, Clock, MapPin, DollarSign, CheckCircle, X } from 'lucide-r
 import Loading from '../function/loading';
 import './Explore.css';
 import './SiteNoticeModal.css';
+import SiteNoticeModal from './SiteNoticeModal';
+
 
 const Explore = () => {
   const [favorites, setFavorites] = useState(new Set());
@@ -22,15 +24,21 @@ const Explore = () => {
   const API_URL = import.meta.env.VITE_API_URL;
 
 
-  // 🔥 Show modal once per user
-  useEffect(() => {
-    const alreadyShown = localStorage.getItem("siteNoticeShown");
 
-    if (!alreadyShown) {
-      setModalOpen(true);  // show modal
-      localStorage.setItem("siteNoticeShown", "true"); // mark as shown
-    }
-  }, []);
+useEffect(() => {
+  const navbarClicked = sessionStorage.getItem("siteNoticeClicked");
+
+  if (!navbarClicked) {
+    setModalOpen(true); 
+  }
+}, []);
+
+
+const handleNavbarClick = () => {
+  setModalOpen(false); // hide modal
+  sessionStorage.setItem("siteNoticeClicked", "true"); 
+};
+
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -76,27 +84,7 @@ const Explore = () => {
 
   return (
     <>
-      {/* 🔥 ONE-TIME MODAL POPUP */}
-      {modalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-box">
-            <button className="close-btn" onClick={() => setModalOpen(false)}>
-              <X size={20} />
-            </button>
-
-            <h2>⚠️ Site Under Development</h2>
-            <p>
-              This website is currently under active development.
-              If you find any bugs, broken pages, or system issues,
-              kindly notify the team. Thank you!
-            </p>
-
-            <button className="ok-btn" onClick={() => setModalOpen(false)}>
-              Got it
-            </button>
-          </div>
-        </div>
-      )}
+     <SiteNoticeModal />
 
       <Navbar />
 

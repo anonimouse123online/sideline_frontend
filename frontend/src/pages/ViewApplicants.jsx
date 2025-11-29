@@ -87,11 +87,12 @@ const ViewApplicants = ({ job, onClose, isVisible }) => {
   switch (status) {
     case 'pending': return 'Pending';
     case 'reviewed': return 'Reviewed';
-    case 'approved': return 'Accepted'; // <-- might confuse "approved" vs "accepted"
+    case 'accepted': return 'Accepted';
     case 'rejected': return 'Rejected';
     default: return 'Pending';
   }
 };
+
 
 
 
