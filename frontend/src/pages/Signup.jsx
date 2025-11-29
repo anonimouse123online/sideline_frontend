@@ -1,16 +1,15 @@
-// src/pages/SignUpPage.jsx
 import React, { useState } from 'react';
-import { Eye, EyeOff, Phone } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 import Navbar from '../components/Navbar';
+import AccountCreated from '../components/AccountCreated.jsx';
 import './Signup.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-
 const SignUpPage = () => {
   const navigate = useNavigate();
-
+  const [isSuccess, setIsSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -37,27 +36,20 @@ const SignUpPage = () => {
       const response = await fetch(`${API_URL}/api/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          phone: formData.phone || "",
-          password: formData.password
-        }),
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.error || "Signup failed");
-      }
+      if (!response.ok) throw new Error(data.error || "Signup failed");
 
-      alert("✅ Account created successfully!");
-
-      navigate("/login");
+      // Show success modal
+      setIsSuccess(true);
+      setTimeout(() => {
+  navigate("/login");
+}, 1000);
 
     } catch (err) {
-      console.error("Signup error:", err);
       setError(err.message || "Failed to create account. Please try again.");
     } finally {
       setLoading(false);
@@ -112,12 +104,17 @@ const SignUpPage = () => {
               <p className="signup-subtitle">Join Sideline and start your journey today.</p>
             </div>
 
+            {/* Error alert */}
             {error && (
               <div className="alert alert-error">
                 {error}
               </div>
             )}
 
+            {/* SUCCESS MODAL */}
+            {isSuccess && <AccountCreated onClose={() => navigate("/login")} />}
+
+            {/* Signup form */}
             <form onSubmit={handleSubmit} className="signup-form">
 
               <div className="name-grid">
