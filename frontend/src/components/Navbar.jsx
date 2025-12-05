@@ -9,7 +9,6 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -24,14 +23,13 @@ const Navbar = () => {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-
   const handleLogout = () => {
-    localStorage.removeItem("token");      
-    localStorage.removeItem("user");      
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
 
-    setUser(null);                         
-    navigate("/login");                    
-    setIsMenuOpen(false);                 
+    setUser(null);
+    navigate("/login");
+    setIsMenuOpen(false);
   };
 
   const handleSearch = (e) => {
@@ -46,14 +44,19 @@ const Navbar = () => {
       <div className="navbar">
         {/* Logo */}
         <div className="logo-container">
-          <Link to="/" className="logo">Sideline</Link>
+          <Link to="/explore" className="logo">
+            Sideline
+          </Link>
         </div>
 
         {/* Desktop Nav Links */}
         <nav className="nav-links">
-          <NavLink to="/explore" className="nav-link">Explore</NavLink>
-          <NavLink to="/find-work" className="nav-link">Find Work</NavLink>
-          <NavLink to="/about" className="nav-link">About</NavLink>
+          <NavLink to="/find-work" className="nav-link">
+            Find Work
+          </NavLink>
+          <NavLink to="/about" className="nav-link">
+            About
+          </NavLink>
         </nav>
 
         {/* Search (hidden on mobile) */}
@@ -69,17 +72,23 @@ const Navbar = () => {
 
         {/* Right Section */}
         <div className="header-right">
-          <button className="icon-btn"><Globe size={20} /></button>
-
           {user ? (
             <>
-              <Link to="/profile" className="icon-btn"><User size={20} /></Link>
-              <button className="btn-secondary" onClick={handleLogout}>Logout</button>
+              <Link to="/profile" className="icon-btn">
+                <User size={20} />
+              </Link>
+              <button className="btn-secondary" onClick={handleLogout}>
+                Logout
+              </button>
             </>
           ) : (
             <>
-              <Link to="/login" className="btn-secondary desktop-only">Log in</Link>
-              <Link to="/signup" className="btn-primary desktop-only">Sign up</Link>
+              <Link to="/login" className="btn-secondary desktop-only">
+                Log in
+              </Link>
+              <Link to="/signup" className="btn-primary desktop-only">
+                Sign up
+              </Link>
             </>
           )}
 
@@ -94,21 +103,37 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className="mobile-menu">
           <nav className="mobile-nav-links">
-            <NavLink to="/explore" onClick={toggleMenu} className="mobile-link">Explore</NavLink>
-            <NavLink to="/find-work" onClick={toggleMenu} className="mobile-link">Find Work</NavLink>
-            <NavLink to="/about" onClick={toggleMenu} className="mobile-link">About</NavLink>
+            <NavLink
+              to="/find-work"
+              onClick={toggleMenu}
+              className="mobile-link"
+            >
+              Find Work
+            </NavLink>
+            <NavLink to="/about" onClick={toggleMenu} className="mobile-link">
+              About
+            </NavLink>
           </nav>
 
           {/* Mobile Auth Section */}
           {user ? (
             <>
-              <Link to="/profile" className="mobile-btn" onClick={toggleMenu}>Profile</Link>
-              <button className="mobile-btn logout" onClick={handleLogout}>Logout</button>
+              <button className="mobile-btn logout" onClick={handleLogout}>
+                Logout
+              </button>
             </>
           ) : (
             <>
-              <Link to="/login" className="mobile-btn" onClick={toggleMenu}>Log in</Link>
-              <Link to="/signup" className="mobile-btn primary" onClick={toggleMenu}>Sign up</Link>
+              <Link to="/login" className="mobile-btn" onClick={toggleMenu}>
+                Log in
+              </Link>
+              <Link
+                to="/signup"
+                className="mobile-btn primary"
+                onClick={toggleMenu}
+              >
+                Sign up
+              </Link>
             </>
           )}
         </div>
