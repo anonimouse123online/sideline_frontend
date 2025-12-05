@@ -45,7 +45,7 @@ const Navbar = () => {
         {/* Logo */}
         <div className="logo-container">
           <Link to="/explore" className="logo">
-            Sideline
+            Hustler Hard
           </Link>
         </div>
 
