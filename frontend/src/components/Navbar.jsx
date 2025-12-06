@@ -45,11 +45,10 @@ const Navbar = () => {
         {/* Logo */}
         <div className="logo-container">
           <Link to="/explore" className="logo">
-            Hustler Hard
+            Sideline
           </Link>
         </div>
 
-        {/* Desktop Nav Links */}
         <nav className="nav-links">
           <NavLink to="/find-work" className="nav-link">
             Find Work
@@ -58,8 +57,6 @@ const Navbar = () => {
             About
           </NavLink>
         </nav>
-
-        {/* Search (hidden on mobile) */}
         <form className="search-container" onSubmit={handleSearch}>
           <input
             type="text"
@@ -70,7 +67,7 @@ const Navbar = () => {
           />
         </form>
 
-        {/* Right Section */}
+
         <div className="header-right">
           {user ? (
             <>
@@ -92,14 +89,13 @@ const Navbar = () => {
             </>
           )}
 
-          {/* Mobile Menu Toggle */}
+
           <button className="icon-btn menu-toggle" onClick={toggleMenu}>
             {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu */}
       {isMenuOpen && (
         <div className="mobile-menu">
           <nav className="mobile-nav-links">
@@ -115,7 +111,6 @@ const Navbar = () => {
             </NavLink>
           </nav>
 
-          {/* Mobile Auth Section */}
           {user ? (
             <>
               <button className="mobile-btn logout" onClick={handleLogout}>

@@ -469,3 +469,556 @@
 
   
 }
+/* --- Base Variables (Define if not already present) --- */
+:root {
+    --color-primary: #1e3a8a; /* Dark Blue */
+    --color-accent: #f59e0b; /* Amber/Orange */
+    --color-text: #1f2937; /* Dark Gray */
+    --color-background: #f9fafb; /* Light Gray/Off-white */
+    --color-card-background: #ffffff;
+    --border-radius: 8px;
+    --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+}
+
+/* --- Hero Section & Search Bar --- */
+.hero-section {
+    padding: 60px 20px 80px;
+    background-color: var(--color-background);
+    text-align: center;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 30px;
+}
+
+.hero-accent {
+    color: var(--color-accent);
+}
+
+/* Base search bar styling (Updated for single input) */
+.main-search-bar {
+    display: flex;
+    /* Center the bar horizontally */
+    max-width: 700px; 
+    margin: 0 auto 30px;
+    background: var(--color-card-background);
+    border: 2px solid var(--color-primary);
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+    overflow: hidden;
+}
+
+/* Focus the single input group (Location) to fill the space */
+.main-search-bar .location-input-group {
+    flex-grow: 1; /* Allows it to take up all available space */
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+}
+
+/* Icon styling */
+.main-search-bar .location-icon {
+    color: var(--color-primary);
+    margin-right: 10px;
+    min-width: 20px; /* Prevent shrinking */
+}
+
+/* Input field styling */
+.main-search-bar .location-input {
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    width: 100%; /* Important for fill */
+    color: var(--color-text);
+}
+
+.main-search-bar .location-input::placeholder {
+    color: #9ca3af;
+}
+
+/* Search button styling */
+.search-submit-btn {
+    padding: 12px 25px;
+    background-color: var(--color-primary);
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    flex-shrink: 0; /* Prevents button from shrinking */
+}
+
+.search-submit-btn:hover {
+    background-color: #1e40af; /* Darker shade of primary */
+}
+
+/* --- Mobile Responsiveness (For the search bar) --- */
+@media (max-width: 768px) {
+    .main-search-bar {
+        flex-direction: column;
+        max-width: 90%;
+        border-radius: var(--border-radius);
+        border: none; /* Make it look cleaner on mobile */
+        box-shadow: none;
+    }
+
+    .main-search-bar .location-input-group {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #d1d5db; /* Add a light border to the input group */
+        border-radius: var(--border-radius);
+        margin-bottom: 10px; /* Space between input and button */
+    }
+
+    .search-submit-btn {
+        width: 100%;
+        padding: 15px;
+        border-radius: var(--border-radius);
+    }
+}
+
+/* --- Job Listings & Card Styling (Remains same but included for completeness) --- */
+
+.results-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.results-header {
+    margin-bottom: 20px;
+}
+
+.results-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.error-banner {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: #fee2e2; /* Red-lite background */
+    color: #b91c1c; /* Darker red text */
+    border: 1px solid #fca5a5;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+}
+
+.error-banner span {
+    margin-left: 10px;
+}
+
+.no-jobs {
+    text-align: center;
+    padding: 50px 0;
+    color: #9ca3af;
+}
+
+.job-listings {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.job-card {
+    background: var(--color-card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-light);
+    padding: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.job-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+.job-header {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.company-logo {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    min-height: 50px;
+    border-radius: 8px;
+    background-color: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-size: 24px;
+    overflow: hidden;
+}
+
+.company-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.job-details {
+    flex-grow: 1;
+}
+
+.job-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 0 0 5px 0;
+}
+
+.company-info {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 10px;
+}
+
+.company-icon, .rating-star {
+    margin-right: 4px;
+}
+
+.separator {
+    margin: 0 8px;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+}
+
+.rating-value {
+    font-weight: 600;
+    color: var(--color-accent);
+}
+
+.rating-reviews {
+    margin-left: 5px;
+    font-size: 0.8rem;
+    color: #9ca3af;
+}
+
+.job-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    color: #4b5563;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+}
+
+.meta-icon {
+    margin-right: 5px;
+    color: var(--color-primary);
+}
+
+.job-description {
+    font-size: 0.95rem;
+    color: #6b7280;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.job-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.job-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.category-badge {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Example Category Color Styling */
+.category-badge.category-general {
+    background-color: #bfdbfe;
+    color: #1e3a8a;
+}
+.category-badge.category-tech {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+.category-badge.category-marketing {
+    background-color: #fef3c7;
+    color: #b45309;
+}
+
+.posted-time {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    margin-left: 10px;
+}
+
+.load-more-section {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.load-more-btn {
+    padding: 12px 25px;
+    background-color: transparent;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.load-more-btn:hover {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+/* --- Mobile Post Job Button --- */
+.mobile-post-job-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--color-accent);
+    color: white;
+    font-size: 1.5rem;
+    border: none;
+    box-shadow: var(--shadow-light);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.mobile-post-job-btn:hover {
+    transform: scale(1.05);
+}
+
+/* ======================================================= */
+/* --- Job Card Styling (Base/Desktop) --- */
+/* (This assumes existing styles are for desktop-first) */
+/* ======================================================= */
+
+.job-listings {
+    display: grid;
+    /* Uses columns for desktop */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 0 20px; /* Base padding */
+}
+
+.job-card {
+    background-color: var(--color-card-background, #ffffff);
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-radius: 10px;
+    padding: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    display: flex; /* Ensures content is inside a flex container */
+}
+
+/* Ensure job content fills the card */
+.job-content {
+    width: 100%;
+}
+
+/* The header containing logo and details */
+.job-header {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.company-logo {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: var(--color-light-gray, #f3f4f6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 15px;
+    font-size: 24px;
+}
+
+.company-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.job-details {
+    flex-grow: 1;
+}
+
+.job-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: var(--color-heading, #111827);
+}
+
+.company-info {
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary, #6b7280);
+    margin-bottom: 8px;
+    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+}
+
+.company-icon, .separator, .rating {
+    margin-right: 8px;
+}
+
+.job-meta {
+    display: flex;
+    flex-wrap: wrap; /* Crucial for mobile stacking */
+    gap: 10px 20px; /* Vertical and horizontal gap */
+    font-size: 0.9rem;
+    color: var(--color-text-secondary, #4b5563);
+    margin-bottom: 15px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+}
+
+.meta-icon {
+    margin-right: 5px;
+    color: var(--color-primary, #1e3a8a);
+}
+
+.job-description {
+    font-size: 0.95rem;
+    color: var(--color-text, #374151);
+    line-height: 1.4;
+    margin-bottom: 15px;
+}
+
+.job-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.job-tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.category-badge {
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    /* Background colors should be defined globally or in the component CSS */
+}
+
+/* Example category badge styling (replace with your actual colors) */
+.category-general { background-color: #4b5563; }
+.category-technology { background-color: #2563eb; }
+.category-services { background-color: #059669; }
+/* ... other categories */
+
+.posted-time {
+    font-size: 0.8rem;
+    color: var(--color-text-tertiary, #9ca3af);
+    align-self: flex-end; /* Align to the bottom right of the footer */
+}
+
+/* ======================================================= */
+/* --- Mobile Overrides (Max-width 768px) --- */
+/* ======================================================= */
+
+@media (max-width: 768px) {
+    
+    /* 1. Job Listings Layout */
+    .job-listings {
+        /* Switch to a single column layout */
+        grid-template-columns: 1fr;
+        padding: 0 15px; /* Reduce horizontal padding */
+        gap: 15px; /* Reduce gap between cards */
+    }
+
+    /* 2. Job Card Details */
+    .job-card {
+        padding: 15px; /* Reduce card padding */
+    }
+    
+    /* Ensure the company info line is fully stacked or wrapped for readability */
+    .company-info {
+        /* Allow wrapping for very long company names/ratings */
+        flex-wrap: wrap; 
+        margin-bottom: 5px;
+    }
+    
+    .company-name, .separator, .rating {
+        /* Add some vertical space if they wrap */
+        margin-bottom: 4px;
+    }
+
+    /* 3. Job Meta (Location, Type, Salary) */
+    .job-meta {
+        /* Force meta items to stack vertically on mobile for better separation */
+        flex-direction: column; 
+        gap: 5px 0; /* Tighten up the vertical spacing */
+        margin-bottom: 10px;
+    }
+
+    /* 4. Job Title and Text Size */
+    .job-title {
+        font-size: 1.05rem; /* Slightly smaller font for title */
+    }
+
+    .job-description {
+        font-size: 0.9rem; /* Slightly smaller font for description */
+        margin-bottom: 10px;
+    }
+
+    /* 5. Footer (Tags and Posted Time) */
+    .job-footer {
+        /* Stack the tags and posted time if necessary */
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px; /* Space between stacked elements */
+    }
+    
+    .posted-time {
+        /* Align posted time to the left when stacked */
+        align-self: flex-start;
+    }
+}
