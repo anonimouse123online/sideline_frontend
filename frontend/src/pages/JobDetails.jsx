@@ -1,8 +1,8 @@
 // src/pages/JobDetails.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-//  Import the X icon for the back button
-import { MapPin, Clock, DollarSign, Star, X } from "lucide-react"; 
+//  Import the X icon for the back button
+import { MapPin, Clock, DollarSign, Star, X } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "./JobDetails.css";
@@ -100,6 +100,18 @@ const JobDetails = () => {
   const handleGoBack = () => {
     navigate(-1); 
   };
+  
+  // --- New Helper Function for Salary Display ---
+  const formatSalary = (min, max) => {
+    const currency = 'AUD';
+    if (min && max) {
+      return `${currency} ${min} – ${currency} ${max}`;
+    }
+    if (min) {
+      return `From ${currency} ${min}`;
+    }
+    return 'Negotiable';
+  };
 
   if (loading) return <p className="loading-text">Loading job...</p>;
   if (error) return <p className="error-text">{error}</p>;
@@ -109,13 +121,13 @@ const JobDetails = () => {
       <Navbar />
       <main className="job-details-page">
         {/* The new back button element */}
-        <button 
-          className="back-btn" 
-          onClick={handleGoBack}
-          aria-label="Go back to job listings"
-        >
-          <X size={24} />
-        </button>
+        <button 
+          className="back-btn" 
+          onClick={handleGoBack}
+          aria-label="Go back to job listings"
+        >
+          <X size={24} />
+        </button>
         <div className="job-details-container">
           <h1>{job.title}</h1>
           <p className="company">{job.company || "Unknown Company"}</p>
@@ -123,7 +135,8 @@ const JobDetails = () => {
           <div className="details">
             <div><MapPin size={16} /> {job.location || "N/A"}</div>
             <div><Clock size={16} /> {job.jobtype || "Full-time"}</div>
-            <div><DollarSign size={16} /> AUD {job.salary || "0"}</div>
+            {/* UPDATED SALARY LINE BELOW */}
+            <div><DollarSign size={16} /> {formatSalary(job.min_budget, job.max_budget)}</div>
             <div><Star size={16} /> 4.8 rating</div>
           </div>
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Clock, DollarSign, Briefcase, Star, Search, AlertCircle } from 'lucide-react';
+// Removed Star from imports
+import { MapPin, Clock, DollarSign, Briefcase, Search, AlertCircle } from 'lucide-react'; 
 import Navbar from '../components/Navbar';
 import Loading from '../function/loading'; 
 import './FindWork.css';
@@ -222,13 +223,8 @@ const FindWork = () => {
                               {job.company || 'Unknown Company'}
                             </span>
                             <span className="separator">•</span>
-                            <div className="rating">
-                              <Star className="rating-star" size={14} fill="#FFD700" stroke="#FFD700" />
-                              <span className="rating-value">{job.rating || 'N/A'}</span>
-                              <span className="rating-reviews">
-                                {job.reviews ? `(${job.reviews})` : ''}
-                              </span>
-                            </div>
+                            
+                            {/* REMOVED RATING DIV HERE */}
                           </div>
 
                           <div className="job-meta">
